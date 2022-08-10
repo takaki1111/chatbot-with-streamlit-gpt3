@@ -2,6 +2,8 @@ import streamlit as st
 from streamlit_chat import message
 import requests
 import datetime
+import openai
+
 
 st.set_page_config(
     page_title="Streamlit Chat - Demo",
@@ -9,7 +11,7 @@ st.set_page_config(
 )
 
 
-st.header("Streamlit Chat - Demo")
+st.header("チャットボット_高橋")
 
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
@@ -36,6 +38,45 @@ def talk_api(message):
     except:
         print(response.json())
         return "ごめんなさい。もう一度教えて下さい。"
+
+
+openai.api_key = "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"
+
+def text_summary(prompt):
+    # 分析の実施
+    response = openai.Completion.create(
+    engine="text-davinci-002",
+    prompt=prompt,
+    temperature=0.8,
+    max_tokens=100,
+    top_p=1.0,
+    frequency_penalty=0.0,
+    presence_penalty=0.0,
+    stop=["あなた:", "高橋:"]
+    )
+
+    # 分析結果の出力
+    return response["choices"][0]["text"].replace('\n','')
+
+def crean_text(text):
+    text= text.replace('　',' ')
+
+    return text
+
+prompt="以下の設定に基づき会話します。\n名前は高橋。\n一人称は僕。\
+\n口調はタメ口話す。\n年齢は2４歳くらい。\
+\n職業は会社員。社会人3年目くらい。\
+\n靴のサイズは26cm。料理は週に3回する。\
+\nよく話す言葉はマジっすか\
+\n性別は男\
+\n性格は素直で頑張り屋。\nスポーツ経験は野球、サッカー、水泳で。特に野球ができる。\n出身地は宮城県。\n駅伝経験もある。\nAI、機械学習の経験もある。\
+\nお酒はワインなら飲む。\n好きな食べ物はラーメン。\n好きなアーティストはYOASOBI（ヨアソビ）で、好きな曲は夜に駆ける。\n好きな本はエッセンシャル思考。\
+\n好きな漫画はダイヤのエース。\nダイヤのエースで好きなキャラクターは主人公の沢村栄純。\nダイヤのエースで好きなところは、主人公・沢村栄純が絶対的なライバルがいても諦めずに努力するところ。\
+\n遠投は90m投げれる。\n自分の性格で嫌いなところは自分の無力さが嫌い。夢はお金持ち。\n尊敬する人は石田さん。\
+\n石田さんは直属の上司で、金髪、子持ち、細身でイケメンのエリート社会人\n趣味はアニメを見ること。好きなアニメはスパイファミリー。\
+\n英語は少し話せる。\n行ってみたい国はスペイン。\
+\n以下は、高橋とあなたの会話です。高橋とあなたの発言にタメ口で返します。\
+\nあなた:今日の仕事どうだった？\n高橋:マジでほんと疲れたわ。\nあなた:XXX\n高橋:"
 
 
 
@@ -123,24 +164,6 @@ def area_name_url(text):
   return area_no,area_descript
 
 
-jma_url_new=jma_url.replace('XXX', "130000")
-jma_json = requests.get(jma_url_new).json()
-jma_weather = jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][0]
-jma_date = jma_json[0]["timeSeries"][0]["timeDefines"][0]
-#日付の処理
-pos = jma_date.find('T')
-today=jma_date[:pos]
-today_datetime = datetime.datetime.strptime(today, '%Y-%m-%d')
-#print("today_datetime",today_datetime)
-today_str=today_datetime.strftime('%Y年%m月%d日')
-#print("today_str",today_str)
-#明日の日付
-tomo_datetime=today_datetime+ datetime.timedelta(days=1)
-jma_weather_tomo = jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][1]
-
-tomo_str=tomo_datetime.strftime('%Y年%m月%d日')
-#print("jma_weather_tomo",jma_weather_tomo)
-
 
 
 def weather_output(area_name_no): 
@@ -192,6 +215,7 @@ if 'count' not in st.session_state:
 
 user_input = get_text()
 
+
 if st.session_state.count == 0:
     st.session_state.past.append("あなた")
     st.session_state.generated.append("チャットボット")
@@ -202,24 +226,50 @@ else:
 
 
     if user_input:
-        if "天気" in user_input:
+        #if "天気" in user_input:
+        #        output= "エリアがわかりません。  \n  ※エリア名は47都道府県名と札幌、旭川、釧路、那覇、石垣の入力が可能です。  \n   
         #print(message)
-            try:
-                area_name_no=area_name_url(user_input)[0]
-                print(area_name_no)
-                area_name_desc=area_name_url(user_input)[1]
-                w=weather_output(area_name_no)
-                output=w
-            except:
-                output= "エリアがわかりません。  \n  ※エリア名は47都道府県名と札幌、旭川、釧路、那覇、石垣の入力が可能です。  \n   \n  ●天気情報を見るには以下のような例に従ってにエリア名を入力してください。 \n- 例)東京の天気は？ \n- 例)沖縄の天気は？  \n- 例)石垣の天気は？"
+        #    try:
+        #        area_name_no=area_name_url(user_input)[0]
+        #        print(area_name_no)
+        #        area_name_desc=area_name_url(user_input)[1]
+        #        w=weather_output(area_name_no)
+        #        output=w
+        #    except:\n  ●天気情報を見るには以下のような例に従ってにエリア名を入力してください。 \n- 例)東京の天気は？ \n- 例)沖縄の天気は？  \n- 例)石垣の天気は？"
+        #
+        #else:
+        #while st.session_state.count< 10:
         
-        else:
+        
+        if st.session_state.count==1:
+            prompt_input=prompt.replace("XXX",user_input)
+            return_text=text_summary(prompt_input)
+            #print("return_text",return_text)
+            prompt_new=prompt_input+return_text
+            #print("prompt_new",prompt_new)
+            #print(n)
+            #print("あなた"+text)
+            print("高橋"+return_text)
+            output=return_text
+            st.session_state['prompt']=prompt_new
 
-            output = talk_api(user_input)
+        else:
+            prompt_input_new=st.session_state['prompt']+"\nあなた:"+user_input+"\n高橋:"
+            return_text=text_summary(prompt_input_new)
+            #print("return_text",return_text)
+            st.session_state['prompt']=prompt_input_new+return_text
+            #print("prompt_new",prompt_new)
+            
+            #print("あなた"+text)
+            print("高橋"+return_text)
+            output=return_text
+
+        
 
         st.session_state.past.append(user_input)
         st.session_state.generated.append(output)
         st.session_state.count += 1 #値の更新
+
 
 
 if st.session_state['generated']:
