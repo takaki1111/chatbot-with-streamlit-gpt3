@@ -40,7 +40,9 @@ def talk_api(message):
         return "ごめんなさい。もう一度教えて下さい。"
 
 
-openai.api_key = "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"
+
+API_KEY=st.secrets.OpenAI.API_KEY
+openai.api_key = API_KEY
 
 def text_summary(prompt):
     # 分析の実施
