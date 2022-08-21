@@ -241,7 +241,7 @@ else:
         #
         #else:
         #while st.session_state.count< 10:
-        
+ 	     
         if st.session_state.count==1:
             try:
                 prompt_input=prompt.replace("XXX",user_input)
@@ -258,23 +258,22 @@ else:
                 return_text=talk_api(user_input)
                 output=return_text
                 st.session_state['talk_api']=user_input
-		
 
-	else:
-		try:
-			prompt_input_new=st.session_state['prompt']+"\nあなた:"+user_input+"\n高橋:"
-			return_text=text_summary(prompt_input_new)
-			#print("return_text",return_text)
-			st.session_state['prompt']=prompt_input_new+return_text
-			#print("prompt_new",prompt_new)
-
-		#print("あなた"+text)
-		print("高橋"+return_text)
-		output=return_text
-			except:
-			return_text=talk_api(user_input)
-			output=return_text
-			st.session_state['talk_api']=user_input	
+        else:
+            try:    
+                prompt_input_new=st.session_state['prompt']+"\nあなた:"+user_input+"\n高橋:"
+                return_text=text_summary(prompt_input_new)
+                #print("return_text",return_text)
+                st.session_state['prompt']=prompt_input_new+return_text
+                #print("prompt_new",prompt_new)
+                
+                #print("あなた"+text)
+                print("高橋"+return_text)
+                output=return_text
+            except:
+                return_text=talk_api(user_input)
+                output=return_text
+                st.session_state['talk_api']=user_input
 
         
 
