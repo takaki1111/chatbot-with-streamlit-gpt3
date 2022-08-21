@@ -37,7 +37,7 @@ def talk_api(message):
         return response.json()["results"][0]["reply"]
     except:
         print(response.json())
-        return "ごめんなさい。もう一度教えて下さい。"
+        return "ごめんなさい。現在入力を受けつけることができません。"
 
 
 
@@ -242,29 +242,39 @@ else:
         #else:
         #while st.session_state.count< 10:
         
-        
         if st.session_state.count==1:
-            prompt_input=prompt.replace("XXX",user_input)
-            return_text=text_summary(prompt_input)
-            #print("return_text",return_text)
-            prompt_new=prompt_input+return_text
-            #print("prompt_new",prompt_new)
-            #print(n)
-            #print("あなた"+text)
-            print("高橋"+return_text)
-            output=return_text
-            st.session_state['prompt']=prompt_new
+            try:
+                prompt_input=prompt.replace("XXX",user_input)
+                return_text=text_summary(prompt_input)
+                #print("return_text",return_text)
+                prompt_new=prompt_input+return_text
+                #print("prompt_new",prompt_new)
+                #print(n)
+                #print("あなた"+text)
+                print("高橋"+return_text)
+                output=return_text
+                st.session_state['prompt']=prompt_new
+            except:
+                return_text=talk_api(user_input)
+                output=return_text
+                st.session_state['talk_api']=user_input
+		
 
-        else:
-            prompt_input_new=st.session_state['prompt']+"\nあなた:"+user_input+"\n高橋:"
-            return_text=text_summary(prompt_input_new)
-            #print("return_text",return_text)
-            st.session_state['prompt']=prompt_input_new+return_text
-            #print("prompt_new",prompt_new)
-            
-            #print("あなた"+text)
-            print("高橋"+return_text)
-            output=return_text
+	else:
+            try:    
+                prompt_input_new=st.session_state['prompt']+"\nあなた:"+user_input+"\n高橋:"
+                return_text=text_summary(prompt_input_new)
+                #print("return_text",return_text)
+                st.session_state['prompt']=prompt_input_new+return_text
+                #print("prompt_new",prompt_new)
+                
+                #print("あなた"+text)
+                print("高橋"+return_text)
+                output=return_text
+            except:
+                return_text=talk_api(user_input)
+                output=return_text
+                st.session_state['talk_api']=user_input
 
         
 
