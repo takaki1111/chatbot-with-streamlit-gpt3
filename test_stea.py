@@ -49,7 +49,7 @@ def text_summary(prompt):
     response = openai.Completion.create(
     engine="text-davinci-002",
     prompt=prompt,
-    temperature=0.8,
+    temperature=0.9,
     max_tokens=100,
     top_p=1.0,
     frequency_penalty=0.8,
